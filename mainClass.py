@@ -35,7 +35,8 @@ class mainClass:
             if frames.lower().endswith(('.png', '.jpg', '.jpeg')):
                 # Verificamos se os arquivos na pasta atual são uma imagem (.JPEG)
                 os.replace(current_dir + '\\' + frames, destination_dir + '\\' + frames) # Enviamos os arquivos para a pasta selecionada
-        return destination_dir, current_dir
+
+        return destination_dir
 
 # Transformar os frames num gif
 
@@ -44,8 +45,7 @@ class mainClass:
 
         frames = [Image.open(image) for image in glob.glob(f"{destination_dir}/*.JPG")]
         frame_one = frames[0]
-        frames.pop(0)
-        frame_one.save(gif_name, format="GIF", append_images=frames[1:], save_all=True, duration=100, loop=0)
+        frame_one.save(gif_name, format="GIF", append_images=frames, save_all=True, duration=100, loop=0)
 
         # Mover o gif para a pasta de destino
 
@@ -64,7 +64,7 @@ class mainClass:
 
         video = youtubeDownloader(url, path) # Atribuímos o vídeo à uma variável
 
-        directories = frameCreator(video) # Criamos um array com os diretórios retornados
+        directory = frameCreator(video)
 
-        gifCreator(directories[0], directories[1]) # Criamos o gif
+        gifCreator(directory) # Criamos o gif
 
