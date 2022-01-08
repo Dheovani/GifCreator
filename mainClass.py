@@ -44,8 +44,7 @@ class mainClass:
         gif_name = input('Insira o nome do gif: ') + '.gif'
 
         frames = [Image.open(image) for image in glob.glob(f"{destination_dir}/*.JPG")]
-        frame_one = frames[0]
-        frame_one.save(gif_name, format="GIF", append_images=frames, save_all=True, duration=100, loop=0)
+        frames[0].save(gif_name, format="GIF", append_images=frames[1:], save_all=True, optimize=False, duration=75, loop=0)
 
         # Mover o gif para a pasta de destino
 
@@ -54,8 +53,8 @@ class mainClass:
         gif_directory = input('Insira o caminho para a pasta onde serão salvos os gifs: ')
 
         os.replace(current_dir + '\\' + gif_name, gif_directory + '\\' + gif_name) # Enviamos o gif para a pasta selecionada
-
-        return frame_one
+        
+        return frames[0]
 
     if __name__ == '__main__':
         # Caso estejamos rodando o código diretamente nessa classe, iremos utilizar o seguinte algoritmo
