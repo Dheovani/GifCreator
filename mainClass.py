@@ -1,7 +1,6 @@
-from posixpath import curdir
 from pytube import YouTube
 from PIL import Image
-import cv2, os, glob, pyautogui
+import cv2, os, glob, imageio
 
 class mainClass:
 # Fazer o download do vídeo através de sua URL do YouTube
@@ -40,28 +39,29 @@ class mainClass:
 
 # Transformar os frames num gif
 
-    def gifCreator(destination_dir):
+    def gifCreator(frame_dir):
         gif_name = input('Insira o nome do gif: ') + '.gif'
 
-        frames = [Image.open(image) for image in glob.glob(f"{destination_dir}/*.JPG")]
-        frames[0].save(gif_name, format="GIF", append_images=frames[1:], save_all=True, optimize=False, duration=75, loop=0)
+        frames = [Image.open(images) for images in sorted(glob.glob(f"{frame_dir}/*.JPG"))]
+        my_gif = imageio.mimsave(gif_name, frames, duration=0.5)
 
         # Mover o gif para a pasta de destino
 
         file_path = os.path.realpath(__file__) # Vamos buscar a pasta deste arquivo .py
         current_dir = os.path.dirname(file_path)
+        # Utilizamos esse método pq os arquivos sempre serão gerados na pasta local
         gif_directory = input('Insira o caminho para a pasta onde serão salvos os gifs: ')
 
         os.replace(current_dir + '\\' + gif_name, gif_directory + '\\' + gif_name) # Enviamos o gif para a pasta selecionada
         
-        return frames[0]
+        return my_gif
 
     if __name__ == '__main__':
         # Caso estejamos rodando o código diretamente nessa classe, iremos utilizar o seguinte algoritmo
         url = input('Insira a url do vídeo que gostaria de converter em um .GIF: ')
         path = input('Insira o caminho para a pasta onde deseja guardar os vídeos: ')
 
-        video = youtubeDownloader(url, path) # Atribuímos o vídeo à uma variável
+        video = youtubeDownloader(url, path)
 
         directory = frameCreator(video)
 
