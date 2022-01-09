@@ -43,7 +43,7 @@ class mainClass:
         gif_name = input('Insira o nome do gif: ') + '.gif'
 
         frames = [Image.open(images) for images in sorted(glob.glob(f"{frame_dir}/*.JPG"))]
-        my_gif = imageio.mimsave(gif_name, frames, duration=0.5)
+        my_gif = imageio.mimsave(gif_name, frames, duration=0.1)
 
         # Mover o gif para a pasta de destino
 
