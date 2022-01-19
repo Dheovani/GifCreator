@@ -1,6 +1,6 @@
 from pytube import YouTube
 from PIL import Image
-import cv2, os, glob, imageio
+import cv2, os, glob
 
 class mainClass:
 # Fazer o download do vídeo através de sua URL do YouTube
@@ -43,7 +43,8 @@ class mainClass:
         gif_name = input('Insira o nome do gif: ') + '.gif'
 
         frames = [Image.open(images) for images in sorted(glob.glob(f"{frame_dir}/*.JPG"))]
-        my_gif = imageio.mimsave(gif_name, frames, duration=0.1)
+        my_gif = frames[0]
+        my_gif.save(gif_name, format='GIF', save_all=True, append_images=frames[1:], optimize=True, duration=100)
 
         # Mover o gif para a pasta de destino
 
