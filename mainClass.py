@@ -7,6 +7,7 @@ class mainClass:
 # Salvar o vídeo na pasta selecionada
 
     def youtubeDownloader(video_url, videos_path):
+        videos_path = videos_path.replace("\\", "/")
         yt = YouTube(video_url) # Esse método seleciona o URL do vídeo em questão
         yt = yt.streams.get_highest_resolution() # Esse método busca os resultados correspondentes e seleciona aquele que possuir a maelhor resolução
         my_video = yt.download(videos_path) # Realizamos o download especificando a pasta de destino
@@ -44,7 +45,7 @@ class mainClass:
 
         frames = [Image.open(images) for images in sorted(glob.glob(f"{frame_dir}/*.JPG"))]
         my_gif = frames[0]
-        my_gif.save(gif_name, format='GIF', save_all=True, append_images=frames[1:], optimize=True, duration=100)
+        my_gif.save(gif_name, format='GIF', save_all=True, append_images=frames[1:], optimize=False, duration=100)
 
         # Mover o gif para a pasta de destino
 
