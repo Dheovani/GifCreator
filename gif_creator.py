@@ -8,6 +8,7 @@ def download_video(video_url: str, videos_path: str) -> str:
     yt = yt.streams.get_highest_resolution()
     return yt.download(videos_path)
 
+
 def frame_creator(video: str, directory: str, name: str = "frame") -> None:
     """Convert the video to a set of frames"""
     vidcap = cv2.VideoCapture(video)
@@ -19,13 +20,15 @@ def frame_creator(video: str, directory: str, name: str = "frame") -> None:
         print('Reading next frame:', success)
         count += 1
 
-def gif_creator(name: str, frame_dir: str, gif_dir: str) -> Image:
+
+def create_gif(name: str, frame_dir: str, gif_dir: str) -> Image:
     """Generates the gif"""
     frames = [Image.open(images) for images in sorted(glob.glob(f"{frame_dir}/*.jpg"))]
     my_gif = frames[0]
     my_gif.save(f"{gif_dir}/{name}", format='GIF', save_all=True, append_images=frames[1:], optimize=True, duration=100)
     
     return my_gif
+
 
 if __name__ == '__main__':
     url = input("Insert video's URL: ")
@@ -37,4 +40,4 @@ if __name__ == '__main__':
     frame_creator(video, frame_dir, gif_name)
 
     gif_dir = input("Insert the path to the gif directory: ")
-    gif_creator(gif_name, frame_dir, gif_dir)
+    create_gif(gif_name, frame_dir, gif_dir)
