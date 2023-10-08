@@ -1,70 +1,40 @@
 from pytube import YouTube
 from PIL import Image
-import cv2, os, glob
+import cv2, glob
 
-class mainClass:
-# Fazer o download do vídeo através de sua URL do YouTube
-# Salvar o vídeo na pasta selecionada
+def download_video(video_url: str, videos_path: str) -> str:
+    """Downloads the video"""
+    yt = YouTube(video_url) 
+    yt = yt.streams.get_highest_resolution()
+    return yt.download(videos_path)
 
-    def youtubeDownloader(video_url, videos_path):
-        yt = YouTube(video_url) # Esse método seleciona o URL do vídeo em questão
-        yt = yt.streams.get_highest_resolution() # Esse método busca os resultados correspondentes e seleciona aquele que possuir a maelhor resolução
-        my_video = yt.download(videos_path) # Realizamos o download especificando a pasta de destino
-        return my_video
+def frame_creator(video: str, directory: str, name: str = "frame") -> None:
+    """Convert the video to a set of frames"""
+    vidcap = cv2.VideoCapture(video)
+    success, image = vidcap.read()
+    count = 0
+    while success:
+        cv2.imwrite(f'{directory}/{name}{count:04d}.jpg', image) # Convert frames to JPG
+        success, image = vidcap.read()
+        print('Reading next frame:', success)
+        count += 1
 
-# Converter o vídeo para uma seleção de frames
+def gif_creator(name: str, frame_dir: str, gif_dir: str) -> Image:
+    """Generates the gif"""
+    frames = [Image.open(images) for images in sorted(glob.glob(f"{frame_dir}/*.jpg"))]
+    my_gif = frames[0]
+    my_gif.save(f"{gif_dir}/{name}", format='GIF', save_all=True, append_images=frames[1:], optimize=True, duration=100)
+    
+    return my_gif
 
-    def frameCreator(video):
-        vidcap = cv2.VideoCapture(video) # Captura os frames do vídeo
-        success, image = vidcap.read() # Seleciona um frame
-        count = 0
-        while success:
-            cv2.imwrite('frame%d.jpg' % count, image) # Transformamos os frames em .JPEG    
-            success, image = vidcap.read() # Seleciona o próximo frame
-            print('Lendo um novo frame: ', success)
-            count += 1
+if __name__ == '__main__':
+    url = input("Insert video's URL: ")
+    video_dir = input("Insert the path to the video directory: ")
+    video = download_video(url, video_dir)
 
-        # Salvar os frames na pasta selecionada
+    gif_name = input("Insert gif's name: ") + '.gif'
+    frame_dir = input("Insert the path to the frame directory: ")
+    frame_creator(video, frame_dir, gif_name)
 
-        file_path = os.path.realpath(__file__) # Vamos buscar a pasta deste arquivo .py
-        current_dir = os.path.dirname(file_path)
-        destination_dir = input('Insira o caminho para a pasta onde serão salvos os frames: ')
-
-        for frames in os.listdir(current_dir):
-            if frames.lower().endswith(('.png', '.jpg', '.jpeg')):
-                # Verificamos se os arquivos na pasta atual são uma imagem (.JPEG)
-                os.replace(current_dir + '\\' + frames, destination_dir + '\\' + frames) # Enviamos os arquivos para a pasta selecionada
-
-        return destination_dir
-
-# Transformar os frames num gif
-
-    def gifCreator(frame_dir):
-        gif_name = input('Insira o nome do gif: ') + '.gif'
-
-        frames = [Image.open(images) for images in sorted(glob.glob(f"{frame_dir}/*.JPG"))]
-        my_gif = frames[0]
-        my_gif.save(gif_name, format='GIF', save_all=True, append_images=frames[1:], optimize=True, duration=100)
-
-        # Mover o gif para a pasta de destino
-
-        file_path = os.path.realpath(__file__) # Vamos buscar a pasta deste arquivo .py
-        current_dir = os.path.dirname(file_path)
-        # Utilizamos esse método pq os arquivos sempre serão gerados na pasta local
-        gif_directory = input('Insira o caminho para a pasta onde serão salvos os gifs: ')
-
-        os.replace(current_dir + '\\' + gif_name, gif_directory + '\\' + gif_name) # Enviamos o gif para a pasta selecionada
-        
-        return my_gif
-
-    if __name__ == '__main__':
-        # Caso estejamos rodando o código diretamente nessa classe, iremos utilizar o seguinte algoritmo
-        url = input('Insira a url do vídeo que gostaria de converter em um .GIF: ')
-        path = input('Insira o caminho para a pasta onde deseja guardar os vídeos: ')
-
-        video = youtubeDownloader(url, path)
-
-        directory = frameCreator(video)
-
-        gifCreator(directory) # Criamos o gif
-
+    gif_dir = input("Insert the path to the gif directory: ")
+    gif_creator(gif_name, frame_dir, gif_dir)
