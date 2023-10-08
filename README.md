@@ -1,5 +1,7 @@
 # YouTube Video to GIF Converter
 
+[GifCreator](https://github.com/Dheovani/GifCreator/assets/79609196/715488e5-b329-4190-b067-5a4dc7533ba0)
+
 ## Description
 
 This is a simple Python script that allows you to convert YouTube videos into animated GIFs. It uses the PyTube library to download YouTube videos, extracts frames from the video, and then creates a GIF from those frames. The script also includes improvements to ensure that frames are processed and organized correctly.
